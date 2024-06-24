@@ -1,0 +1,63 @@
+name: sokari_flutter_interview
+description: Senior Flutter Engineer Interview | Stage 1
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  font_awesome_flutter: ^10.7.0
+  scroll_to_hide: ^2.1.0
+  flutter_svg: ^2.0.10+1
+  flutter_animate: ^4.5.0
+  auto_size_text: ^3.0.0
+#  device_preview: ^1.1.0
+  flutter_map: ^7.0.1
+  latlong2: ^0.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/images/
+    - assets/icons/
+
+    # An image asset can refer to one or more resolution-specific "variants", see
+    # https://flutter.dev/assets-and-images/#resolution-aware
+
+    # For details regarding adding assets from package dependencies, see
+    # https://flutter.dev/assets-and-images/#from-packages
+
+    # To add custom fonts to your application, add a fonts section here,
+    # in this "flutter" section. Each entry in this list should have a
+    # "family" key with the font family name, and a "fonts" key with a
+    # list giving the asset and other descriptors for the font. For
+    # example:
+
+  fonts:
+    - family: Euclid
+      fonts:
+        - asset: assets/fonts/euclid_circular_a_semibold.ttf
+        - asset: assets/fonts/euclid_circular_a_bold.ttf
+          weight: 800
+        - asset: assets/fonts/euclid_circular_a_light.ttf
+        - asset: assets/fonts/euclid_circular_a_medium.ttf
+        - asset: assets/fonts/euclid_circular_a_regular.ttf
+          style: normal
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages

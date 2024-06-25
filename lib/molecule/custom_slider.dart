@@ -67,7 +67,7 @@ class _CustomSliderState extends State<CustomSlider> {
                     curve: animationCurve,
                     width: slide ? constraints.maxWidth : constraints.minWidth,
                     height: widget.height,
-                    color: Colors.white24,
+                    color: const Color.fromRGBO(196, 183, 166, .7),
                     duration: animationDuration,
                   ),
                 ),

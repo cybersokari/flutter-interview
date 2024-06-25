@@ -38,6 +38,7 @@ class _LandingAppbarViewState extends State<LandingAppbarView> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final appBarHeight = Scaffold.of(context).appBarMaxHeight!;
+    const leadingContentColor = Color.fromRGBO(165, 149, 126, 1);
     return Row(
       children: [
         AnimatedContainer(
@@ -60,6 +61,8 @@ class _LandingAppbarViewState extends State<LandingAppbarView> {
               children: [
                 LayoutBuilder(builder: (cnt, constraints) {
                   return SvgPicture.asset(
+                    colorFilter: const ColorFilter.mode(
+                        leadingContentColor, BlendMode.srcIn),
                     Assets.iconsLocationPin,
                     height: appBarHeight / 10,
                     width: 15,
@@ -73,7 +76,7 @@ class _LandingAppbarViewState extends State<LandingAppbarView> {
                     maxLines: 1,
                     minFontSize: 4,
                     "Akwa Ibom",
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: leadingContentColor),
                   ),
                 ),
               ],

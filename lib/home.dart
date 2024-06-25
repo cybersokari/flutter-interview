@@ -35,9 +35,9 @@ class _MyHomePageState extends State<MyHomePage>
   void initState() {
     super.initState();
     _navigationAnimationController = AnimationController(
-        vsync: this, value: 100, duration: const Duration(milliseconds: 50));
+        vsync: this, value: 100, duration: 1000.milliseconds);
 
-    Future.delayed(const Duration(milliseconds: 3000), () {
+    Future.delayed(4.seconds, () {
       _navigationAnimationController.reverse();
     });
   }

@@ -35,9 +35,6 @@ class _LandingViewState extends State<LandingView> {
     super.initState();
     buyCount = 401;
     rentCount = 1050;
-    Future.delayed(const Duration(seconds: 1), () {
-      startGalleryAnimation();
-    });
     buyCountTimer = Timer.periodic(const Duration(milliseconds: 1), (timer) {
       int tick = timer.tick;
       if (tick < 1035) {
@@ -69,7 +66,7 @@ class _LandingViewState extends State<LandingView> {
 
   double galleryPosition = -1000;
 
-  void startGalleryAnimation() => galleryPosition = -175;
+  void startGalleryAnimation(double height) => galleryPosition = -height * .23;
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +75,7 @@ class _LandingViewState extends State<LandingView> {
     const countInfoFontSize = 14.0;
     const rentTextColor = Color.fromRGBO(165, 149, 126, 1);
     const greetingTextColor = Color.fromRGBO(35, 34, 32, 1);
+    const greetingTextSize = 35.0;
     return Container(
       decoration: BoxDecoration(gradient: _homeBackgroundGradient),
       child: Stack(
@@ -97,16 +95,15 @@ class _LandingViewState extends State<LandingView> {
                     ).animate().fadeIn(duration: 3.seconds),
                     const AutoSizeText("let's select your",
                             style: TextStyle(
-                              color: greetingTextColor,
-                              fontSize: 28,
-                            ))
+                                color: greetingTextColor,
+                                fontSize: greetingTextSize))
                         .animate(delay: 500.milliseconds)
                         .slideY(duration: 1500.milliseconds, begin: 1.5)
                         .fadeIn(duration: 3000.milliseconds, begin: 0),
                     const AutoSizeText("perfect place",
                             style: TextStyle(
                               color: greetingTextColor,
-                              fontSize: 28,
+                              fontSize: greetingTextSize,
                             ))
                         .animate(delay: 750.milliseconds)
                         .slideY(duration: 1500.milliseconds, begin: 1.5)
@@ -163,7 +160,10 @@ class _LandingViewState extends State<LandingView> {
                             ],
                           ),
                         )
-                            .animate(delay: const Duration(milliseconds: 1000))
+                            .animate(
+                                delay: const Duration(milliseconds: 1000),
+                                onComplete: (_) =>
+                                    startGalleryAnimation(height))
                             .scaleXY(
                                 begin: 0,
                                 end: 1,

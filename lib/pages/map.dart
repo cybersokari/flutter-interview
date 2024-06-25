@@ -38,6 +38,7 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
+    final markerState = widget.markerModel.markerState;
     return FutureBuilder(
       future: _mapFuture,
       builder: (context, snapshot) {
@@ -67,7 +68,7 @@ class _MapViewState extends State<MapView> {
             MarkerLayer(markers: [
               Marker(
                 height: 50,
-                width: 125,
+                width: 145,
                 point: _initialCenter,
                 child: AnimatedSwitcher(
                   duration: 1.seconds,
@@ -78,21 +79,51 @@ class _MapViewState extends State<MapView> {
                       child: widget,
                     );
                   },
-                  child: switch (widget.markerModel.markerState) {
-                    MarkerState.hidden => SizedBox.shrink(
-                        key: UniqueKey(),
-                      ),
-                    MarkerState.icon => CustomMapMarker(key: UniqueKey()),
-                    MarkerState.text => const CustomMapMarker(
-                        child: AutoSizeText(
-                          minFontSize: 8,
-                          "Google Complex",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                  child: markerState == MarkerState.hidden
+                      ? const SizedBox.shrink()
+                      : AnimatedSwitcher(
+                          duration: 1.seconds,
+                          transitionBuilder: (widget, animation) {
+                            return SizeTransition(
+                              axisAlignment: -1,
+                              axis: Axis.horizontal,
+                              sizeFactor: animation,
+                              child: widget,
+                            );
+                            return FadeTransition(
+                              opacity: animation,
+                              child: widget,
+                            );
+                          },
+                          layoutBuilder: (widget, widgets) {
+                            return Stack(
+                              children: [
+                                Positioned(
+                                  left: 0,
+                                  child: widget ?? const SizedBox.shrink(),
+                                ),
+                                ...List.generate(
+                                  widgets.length,
+                                  (index) => Positioned(
+                                      left: 0, child: widgets[index]),
+                                ),
+                              ],
+                            );
+                          },
+                          child: markerState == MarkerState.icon
+                              ? CustomMapMarker(
+                                  key: UniqueKey(),
+                                )
+                              : const CustomMapMarker(
+                                  child: AutoSizeText(
+                                    minFontSize: 8,
+                                    "Google Complex",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                         ),
-                      ),
-                  },
                 ),
               ),
             ]),

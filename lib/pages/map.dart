@@ -84,6 +84,20 @@ class _MapViewState extends State<MapView> {
                       : AnimatedSwitcher(
                           duration: 1.seconds,
                           transitionBuilder: (widget, animation) {
+                            return Stack(
+                              children: [
+                                SizeTransition(
+                                  axisAlignment: -1,
+                                  axis: Axis.horizontal,
+                                  sizeFactor: animation,
+                                  child: widget,
+                                ),
+                                FadeTransition(
+                                  opacity: animation,
+                                  child: widget,
+                                ),
+                              ],
+                            );
                             return SizeTransition(
                               axisAlignment: -1,
                               axis: Axis.horizontal,

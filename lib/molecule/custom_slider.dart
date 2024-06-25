@@ -12,12 +12,10 @@ class CustomSlider extends StatefulWidget {
   final Duration autoMoveDelay;
   final String? text;
   final Function()? onSlided;
-  final bool enabled;
 
   const CustomSlider({
     this.onSlided,
     this.text,
-    this.enabled = true,
     this.autoMoveDelay = const Duration(seconds: 2),
     super.key,
     this.height = 31,
@@ -39,11 +37,9 @@ class _CustomSliderState extends State<CustomSlider> {
     super.initState();
 
     Future.delayed(widget.autoMoveDelay, () {
-      if (widget.enabled) {
-        setState(() {
-          slide = true;
-        });
-      }
+      setState(() {
+        slide = true;
+      });
     });
   }
 
@@ -57,6 +53,7 @@ class _CustomSliderState extends State<CustomSlider> {
         builder: (_, BoxConstraints constraints) {
           final sliderRadius = widget.height / 2;
           final sliderMaxX = constraints.maxWidth - 2 * sliderRadius;
+          print("SliderMaxX: ${constraints.maxWidth}");
           return Stack(
             children: [
               ClipRRect(

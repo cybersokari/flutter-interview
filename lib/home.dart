@@ -51,11 +51,38 @@ class _MyHomePageState extends State<MyHomePage>
 
   final mapMakerModel = MapMarkerModel();
 
+  Widget _navButton(String iconPath, double screenHeight, Function()? onTap,
+      {bool active = false}) {
+    final iconButtonSize = screenHeight * .025;
+    const iconPadding = EdgeInsets.all(10);
+    return Container(
+      decoration: BoxDecoration(
+          shape: BoxShape.circle, color: active ? Colors.orange : Colors.black),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          onTap: onTap,
+          highlightColor: Colors.white,
+          splashColor: Colors.white70,
+          child: Padding(
+            padding: iconPadding,
+            child: SvgPicture.asset(
+              width: iconButtonSize,
+              iconPath,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final bottomNavHorizontalPadding = width * .11;
+    final navBackground = Colors.black.withOpacity(.9);
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -76,90 +103,34 @@ class _MyHomePageState extends State<MyHomePage>
         child: AnimatedBuilder(
             animation: _navigationAnimationController,
             builder: (context, childWidget) {
-              final iconButtonSize = height * .025;
-              const iconPadding = EdgeInsets.all(10);
               return Transform.translate(
                 offset: Offset(0, 200 * _navigationAnimationController.value),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(40),
                   child: Container(
-                    // height: 50,
-                    color: Colors.black87,
+                    padding: const EdgeInsets.all(8),
+                    color: navBackground,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                          highlightColor: Colors.white,
-                          splashColor: Colors.white,
-                          onPressed: () => setState(() {
-                            showMapView = true;
+                        _navButton(
+                            active: showMapView,
+                            Assets.iconsSearchFilled,
+                            height,
+                            () => setState(() {
+                                  showMapView = true;
+                                })),
+                        _navButton(Assets.iconsChatFilled, height, null),
+                        _navButton(
+                          active: !showMapView,
+                          Assets.iconsHomeFilled,
+                          height,
+                          () => setState(() {
+                            showMapView = false;
                           }),
-                          icon: Container(
-                            padding: iconPadding,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color:
-                                    showMapView ? Colors.orange : Colors.black),
-                            child: SvgPicture.asset(
-                              width: iconButtonSize,
-                              Assets.iconsSearchFilled,
-                            ),
-                          ),
                         ),
-                        IconButton(
-                          onPressed: null,
-                          icon: Container(
-                            padding: iconPadding,
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: SvgPicture.asset(
-                              width: iconButtonSize,
-                              Assets.iconsChatFilled,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                            highlightColor: Colors.white,
-                            splashColor: Colors.white,
-                            onPressed: () => setState(() {
-                                  showMapView = false;
-                                }),
-                            icon: Container(
-                              padding: iconPadding,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: showMapView
-                                      ? Colors.black
-                                      : Colors.orange),
-                              child: SvgPicture.asset(
-                                width: iconButtonSize,
-                                Assets.iconsHomeFilled,
-                              ),
-                            )),
-                        IconButton(
-                          icon: Container(
-                            padding: iconPadding,
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: SvgPicture.asset(
-                              width: iconButtonSize,
-                              Assets.iconsHeartFilled,
-                            ),
-                          ),
-                          onPressed: null,
-                        ),
-                        IconButton(
-                          onPressed: null,
-                          icon: Container(
-                            padding: iconPadding,
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: SvgPicture.asset(
-                              width: iconButtonSize,
-                              Assets.iconsProfile,
-                            ),
-                          ),
-                        ),
+                        _navButton(Assets.iconsHeartFilled, height, null),
+                        _navButton(Assets.iconsProfile, height, null),
                       ],
                     ),
                   ),

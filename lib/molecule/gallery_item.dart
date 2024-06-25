@@ -3,12 +3,18 @@ import 'package:flutter/widgets.dart';
 import 'custom_slider.dart';
 
 class GalleryItem extends StatelessWidget {
-  const GalleryItem(
-      {super.key, required this.imagePath, this.flex = 1, this.sliderText});
+  const GalleryItem({
+    super.key,
+    required this.imagePath,
+    this.flex = 1,
+    this.sliderText,
+    this.sliderDelay = const Duration(milliseconds: 4000),
+  });
 
   final int flex;
   final String imagePath;
   final String? sliderText;
+  final Duration sliderDelay;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +44,7 @@ class GalleryItem extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   CustomSlider(
+                    autoMoveDelay: sliderDelay,
                     height: height * .053,
                     text: "Ademola St. 34",
                   ),

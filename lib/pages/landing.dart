@@ -24,9 +24,9 @@ class _LandingViewState extends State<LandingView> {
     begin: Alignment.bottomRight,
     end: Alignment.topLeft,
     colors: [
-      Colors.orange.withOpacity(0.8),
-      Colors.orange.withOpacity(0.3),
-      Colors.orange.withOpacity(0.0),
+      Colors.orange.withOpacity(0.4),
+      Colors.orange.withOpacity(0.4),
+      Colors.white.withOpacity(0.1),
     ],
   );
 
@@ -69,17 +69,21 @@ class _LandingViewState extends State<LandingView> {
 
   double galleryPosition = -1000;
 
-  void startGalleryAnimation() => galleryPosition = 0;
+  void startGalleryAnimation() => galleryPosition = -175;
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    const countFontSize = 34.0;
+    const countInfoFontSize = 14.0;
+    const rentTextColor = Color.fromRGBO(165, 149, 126, 1);
+    const greetingTextColor = Color.fromRGBO(35, 34, 32, 1);
     return Container(
       decoration: BoxDecoration(gradient: _homeBackgroundGradient),
       child: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: height / 6.5),
+            padding: EdgeInsets.only(left: 20, right: 20, top: height / 7),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -88,11 +92,12 @@ class _LandingViewState extends State<LandingView> {
                   children: [
                     Text(
                       "Hi, Bukola",
-                      style: TextStyle(color: Colors.grey.shade600),
+                      style:
+                          TextStyle(color: Colors.grey.shade600, fontSize: 18),
                     ).animate().fadeIn(duration: 3.seconds),
                     const AutoSizeText("let's select your",
                             style: TextStyle(
-                              color: Colors.black,
+                              color: greetingTextColor,
                               fontSize: 28,
                             ))
                         .animate(delay: 500.milliseconds)
@@ -100,7 +105,7 @@ class _LandingViewState extends State<LandingView> {
                         .fadeIn(duration: 3000.milliseconds, begin: 0),
                     const AutoSizeText("perfect place",
                             style: TextStyle(
-                              color: Colors.black,
+                              color: greetingTextColor,
                               fontSize: 28,
                             ))
                         .animate(delay: 750.milliseconds)
@@ -109,12 +114,12 @@ class _LandingViewState extends State<LandingView> {
                   ],
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 LayoutBuilder(builder: (cxt, constraint) {
-                  final itemSize = constraint.maxWidth * .45;
+                  final itemSize = constraint.maxWidth * .475;
                   return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100),
@@ -131,7 +136,8 @@ class _LandingViewState extends State<LandingView> {
                             children: [
                               const AnimatedDefaultTextStyle(
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                                    color: Colors.white,
+                                    fontSize: countInfoFontSize),
                                 duration: Duration(milliseconds: 1000),
                                 child: Text(
                                   "BUY",
@@ -146,10 +152,11 @@ class _LandingViewState extends State<LandingView> {
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      fontSize: 30)),
+                                      fontSize: countFontSize)),
                               const Text(
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                                    color: Colors.white,
+                                    fontSize: countInfoFontSize),
                                 "offers",
                               ),
                               const Spacer(),
@@ -177,7 +184,8 @@ class _LandingViewState extends State<LandingView> {
                                   children: [
                                     const Text(
                                       style: TextStyle(
-                                          color: Colors.grey, fontSize: 12),
+                                          color: rentTextColor,
+                                          fontSize: countInfoFontSize),
                                       "RENT",
                                     ),
                                     const Spacer(),
@@ -189,11 +197,12 @@ class _LandingViewState extends State<LandingView> {
                                         value: rentCount,
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.grey,
-                                            fontSize: 30)),
+                                            color: rentTextColor,
+                                            fontSize: countFontSize)),
                                     const Text(
                                       style: TextStyle(
-                                          color: Colors.grey, fontSize: 12),
+                                          color: rentTextColor,
+                                          fontSize: countInfoFontSize),
                                       "offers",
                                     ),
                                     const Spacer(),
@@ -217,7 +226,7 @@ class _LandingViewState extends State<LandingView> {
             right: 0,
             duration: const Duration(milliseconds: 2000),
             child: Gallery(
-              height: height / 1.7,
+              height: height * .7,
             ),
           )
         ],

@@ -12,6 +12,7 @@ class GalleryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Expanded(
       flex: flex,
       child: Stack(
@@ -27,18 +28,19 @@ class GalleryItem extends StatelessWidget {
                   image: Image.asset(imagePath).image, fit: BoxFit.cover),
             ),
           ),
-          const Positioned(
+          Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   CustomSlider(
+                    height: height * .053,
                     text: "Ademola St. 34",
-                  )
+                  ),
                 ],
               ),
             ),

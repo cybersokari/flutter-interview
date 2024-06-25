@@ -67,7 +67,7 @@ class _CustomSliderState extends State<CustomSlider> {
                     curve: animationCurve,
                     width: slide ? constraints.maxWidth : constraints.minWidth,
                     height: widget.height,
-                    color: Colors.transparent,
+                    color: Colors.white24,
                     duration: animationDuration,
                   ),
                 ),
@@ -112,10 +112,16 @@ class _CustomSliderState extends State<CustomSlider> {
         child: AnimatedOpacity(
           opacity: _textOpacity,
           duration: const Duration(milliseconds: 1000),
-          child: AutoSizeText(
-            maxFontSize: 17,
-            widget.text!,
-            style: Theme.of(context).textTheme.titleLarge,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: AutoSizeText(
+              textAlign: TextAlign.center,
+              maxFontSize: 17,
+              minFontSize: 8,
+              maxLines: 1,
+              widget.text!,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
         ),
       ),

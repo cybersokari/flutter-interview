@@ -12,6 +12,7 @@ import 'package:sokari_flutter_interview/pages/landing.dart';
 import 'package:sokari_flutter_interview/pages/map.dart';
 
 import 'atom/map_info_selector.dart';
+import 'molecule/faded_index_stack.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -28,6 +29,7 @@ class _MyHomePageState extends State<MyHomePage>
   final _greyButtonColor = Colors.grey.withOpacity(.7);
   late AnimationController _navigationAnimationController;
   bool showMapInfoSelector = false;
+  final mapItemsVisibilityDelay = 1200.milliseconds;
 
   @override
   void initState() {
@@ -43,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void dispose() {
     _navigationAnimationController.dispose();
+    mapMakerModel.dispose();
     super.dispose();
   }
 
@@ -51,6 +54,8 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final bottomNavHorizontalPadding = width * .11;
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -58,82 +63,101 @@ class _MyHomePageState extends State<MyHomePage>
         isMap: showMapView,
         height: height * .1,
       ),
-      body: IndexedStack(
+      body: FadeIndexedStack(
+        duration: 1.seconds,
         index: showMapView ? 1 : 0,
         children: [const LandingView(), MapView(mapMakerModel)],
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0, left: 32, right: 32),
+        padding: EdgeInsets.only(
+            bottom: height * 0.02,
+            left: bottomNavHorizontalPadding,
+            right: bottomNavHorizontalPadding),
         child: AnimatedBuilder(
             animation: _navigationAnimationController,
             builder: (context, childWidget) {
+              final iconButtonSize = height * .025;
+              const iconPadding = EdgeInsets.all(10);
               return Transform.translate(
                 offset: Offset(0, 200 * _navigationAnimationController.value),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(40),
                   child: Container(
-                    padding: const EdgeInsetsDirectional.only(
-                        top: 4, bottom: 4, end: 8),
                     // height: 50,
                     color: Colors.black87,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 500),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: showMapView
-                                  ? Colors.orange
-                                  : Colors.transparent),
-                          child: IconButton(
-                            // highlightColor: Theme.of(context).highlightColor,
-                            onPressed: () => setState(() {
-                              showMapView = true;
-                            }),
-                            icon: SvgPicture.asset(
+                        IconButton(
+                          highlightColor: Colors.white,
+                          splashColor: Colors.white,
+                          onPressed: () => setState(() {
+                            showMapView = true;
+                          }),
+                          icon: Container(
+                            padding: iconPadding,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                    showMapView ? Colors.orange : Colors.black),
+                            child: SvgPicture.asset(
+                              width: iconButtonSize,
                               Assets.iconsSearchFilled,
                             ),
                           ),
                         ),
-                        Container(
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.transparent),
-                          child: SvgPicture.asset(
-                            Assets.iconsChatFilled,
+                        IconButton(
+                          onPressed: null,
+                          icon: Container(
+                            padding: iconPadding,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.black),
+                            child: SvgPicture.asset(
+                              width: iconButtonSize,
+                              Assets.iconsChatFilled,
+                            ),
                           ),
                         ),
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 500),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: showMapView
-                                  ? Colors.transparent
-                                  : Colors.orange),
-                          child: IconButton(
-                              // highlightColor: Theme.of(context).highlightColor,
-                              onPressed: () => setState(() {
-                                    showMapView = false;
-                                  }),
-                              icon: SvgPicture.asset(
+                        IconButton(
+                            highlightColor: Colors.white,
+                            splashColor: Colors.white,
+                            onPressed: () => setState(() {
+                                  showMapView = false;
+                                }),
+                            icon: Container(
+                              padding: iconPadding,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: showMapView
+                                      ? Colors.black
+                                      : Colors.orange),
+                              child: SvgPicture.asset(
+                                width: iconButtonSize,
                                 Assets.iconsHomeFilled,
-                              )),
-                        ),
-                        Container(
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.transparent),
-                          child: SvgPicture.asset(
-                            Assets.iconsHeartFilled,
+                              ),
+                            )),
+                        IconButton(
+                          icon: Container(
+                            padding: iconPadding,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.black),
+                            child: SvgPicture.asset(
+                              width: iconButtonSize,
+                              Assets.iconsHeartFilled,
+                            ),
                           ),
+                          onPressed: null,
                         ),
-                        Container(
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.transparent),
-                          child: SvgPicture.asset(
-                            Assets.iconsProfile,
+                        IconButton(
+                          onPressed: null,
+                          icon: Container(
+                            padding: iconPadding,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.black),
+                            child: SvgPicture.asset(
+                              width: iconButtonSize,
+                              Assets.iconsProfile,
+                            ),
                           ),
                         ),
                       ],
@@ -145,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage>
       ),
       floatingActionButton: AnimatedOpacity(
         opacity: showMapView ? 1 : 0,
-        duration: const Duration(milliseconds: 700),
+        duration: mapItemsVisibilityDelay,
         onEnd: () {
           if (showMapView) {
             mapMakerModel.showText();

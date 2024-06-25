@@ -37,6 +37,7 @@ class _LandingAppbarViewState extends State<LandingAppbarView> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final appBarHeight = Scaffold.of(context).appBarMaxHeight!;
     return Row(
       children: [
         AnimatedContainer(
@@ -57,7 +58,13 @@ class _LandingAppbarViewState extends State<LandingAppbarView> {
             duration: const Duration(milliseconds: 2000),
             child: Row(
               children: [
-                SvgPicture.asset(Assets.iconsLocationPin),
+                LayoutBuilder(builder: (cnt, constraints) {
+                  return SvgPicture.asset(
+                    Assets.iconsLocationPin,
+                    height: appBarHeight / 10,
+                    width: 15,
+                  );
+                }),
                 const SizedBox(
                   width: 4,
                 ),

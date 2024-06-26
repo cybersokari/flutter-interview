@@ -46,7 +46,7 @@ class _MapAppbarViewState extends State<MapAppbarView>
 
   @override
   Widget build(BuildContext context) {
-    final height = Scaffold.of(context).appBarMaxHeight! * .4;
+    final height = Scaffold.of(context).appBarMaxHeight! * .35;
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
       var width1 = (_flex1 * width) / (_flex1 + _flex2 + _flex3);
@@ -68,7 +68,10 @@ class _MapAppbarViewState extends State<MapAppbarView>
                       Radius.circular(30),
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: height * .3,
+                    vertical: height * .2,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -99,7 +102,10 @@ class _MapAppbarViewState extends State<MapAppbarView>
                 child: Container(
                   height: height,
                   width: width2,
-                  padding: const EdgeInsets.all(14),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: height * .3,
+                    vertical: height * .2,
+                  ),
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white,

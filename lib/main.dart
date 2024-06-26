@@ -1,11 +1,10 @@
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'home.dart';
 
 void main() {
-  runApp(DevicePreview(enabled: kDebugMode, builder: (_) => const MyApp()));
+  // runApp(DevicePreview(enabled: kDebugMode, builder: (_) => const MyApp()));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

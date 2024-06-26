@@ -26,7 +26,11 @@ class Assets {
   static const String iconsRightArrowLine = 'assets/icons/right_arrow_line.svg';
   static const String iconsSearchFilled = 'assets/icons/search_filled.svg';
   static const String iconsSearchLine = 'assets/icons/search_line.svg';
+  static const String iconsShieldLine = 'assets/icons/shield_line.svg';
+  static const String iconsShoppingBasketLine =
+      'assets/icons/shopping_basket_line.svg';
   static const String iconsStackLine = 'assets/icons/stack_line.svg';
+  static const String iconsWalletLine = 'assets/icons/wallet_line.svg';
   static const String imagesImg1 = 'assets/images/img_1.png';
   static const String imagesImg2 = 'assets/images/img_2.png';
   static const String imagesImg3 = 'assets/images/img_3.png';

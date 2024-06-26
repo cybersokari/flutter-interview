@@ -59,7 +59,6 @@ class _LandingAppbarViewState extends State<LandingAppbarView>
     return Row(
       children: [
         AnimatedContainer(
-          height: appBarHeight * .4,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
@@ -82,7 +81,7 @@ class _LandingAppbarViewState extends State<LandingAppbarView>
                     colorFilter: const ColorFilter.mode(
                         leadingContentColor, BlendMode.srcIn),
                     Assets.iconsLocationPin,
-                    height: appBarHeight / 10,
+                    height: appBarHeight * .1,
                     width: 15,
                   );
                 }),
@@ -105,8 +104,8 @@ class _LandingAppbarViewState extends State<LandingAppbarView>
         ScaleTransition(
           scale: _scaleAnimation,
           child: CircleAvatar(
-            radius: appBarHeight * .2,
             foregroundImage: Image.asset(
+              height: appBarHeight * .15,
               Assets.imagesImg5,
             ).image,
           ),

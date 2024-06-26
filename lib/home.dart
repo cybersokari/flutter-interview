@@ -92,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     final width = MediaQuery.of(context).size.width;
     final bottomNavHorizontalPadding = width * .11;
     final navBackground = Colors.black.withOpacity(.9);
+    final favIconHeight = height * .02;
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -153,18 +154,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               );
             }),
       ),
-      floatingActionButton: AnimatedOpacity(
-        opacity: showMapView ? 1 : 0,
-        duration: mapItemsVisibilityDelay,
-        onEnd: () {
-          if (showMapView) {
-            mapMakerModel.showText();
-          } else {
-            mapMakerModel.hide();
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(left: 35, right: 10),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(left: width * .1, right: width * .01),
+        child: AnimatedOpacity(
+          opacity: showMapView ? 1 : 0,
+          duration: mapItemsVisibilityDelay,
+          onEnd: () {
+            if (showMapView) {
+              mapMakerModel.showText();
+            } else {
+              mapMakerModel.hide();
+            }
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -194,7 +195,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: _greyButtonColor),
-                                child: SvgPicture.asset(Assets.iconsStackLine)),
+                                child: SvgPicture.asset(
+                                    height: favIconHeight,
+                                    Assets.iconsStackLine)),
                           ),
                         ),
                       ),
@@ -209,6 +212,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               return mapMakerModel.showIcon();
                             }
                           }),
+                          screenHeight: height,
+                          screenWidth: width,
                         ),
                       ),
                     ],
@@ -222,7 +227,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle, color: _greyButtonColor),
-                        child: SvgPicture.asset(Assets.iconsNavigation)),
+                        child: SvgPicture.asset(
+                            height: favIconHeight, Assets.iconsNavigation)),
                   ),
                 ],
               ),
@@ -234,11 +240,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   color: _greyButtonColor,
                   child: Row(
                     children: [
-                      SvgPicture.asset(Assets.iconsHambugerLine),
-                      const SizedBox(
-                        width: 4,
+                      SvgPicture.asset(
+                          height: favIconHeight, Assets.iconsHambugerLine),
+                      SizedBox(
+                        width: width * .015,
                       ),
                       const AutoSizeText(
+                        minFontSize: 4,
                         "list of variants",
                         style: TextStyle(color: Colors.white, fontSize: 14),
                       ),

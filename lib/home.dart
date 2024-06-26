@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sokari_flutter_interview/atom/inkwell_button.dart';
+import 'package:sokari_flutter_interview/extensions/number_duration_extensions.dart';
 import 'package:sokari_flutter_interview/generated/assets.dart';
 import 'package:sokari_flutter_interview/model/map_marker_model.dart';
 import 'package:sokari_flutter_interview/molecule/custom_appbar.dart';
@@ -23,13 +23,22 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   bool showMapView = false;
   final _greyButtonColor = Colors.grey.withOpacity(.7);
   late AnimationController _navigationAnimationController;
   bool showMapInfoSelector = false;
   final mapItemsVisibilityDelay = 1200.milliseconds;
+
+  late final AnimationController _scaleAnimationController =
+      AnimationController(
+    duration: 1000.milliseconds,
+    vsync: this,
+  );
+  late final Animation<double> _scaleAnimation = CurvedAnimation(
+    parent: _scaleAnimationController,
+    curve: Curves.fastOutSlowIn,
+  );
 
   @override
   void initState() {
@@ -64,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage>
           borderRadius: const BorderRadius.all(Radius.circular(20)),
           onTap: onTap,
           highlightColor: Colors.white,
-          splashColor: Colors.white70,
+          splashColor: Colors.white54,
           child: Padding(
             padding: iconPadding,
             child: SvgPicture.asset(
@@ -104,7 +113,13 @@ class _MyHomePageState extends State<MyHomePage>
             animation: _navigationAnimationController,
             builder: (context, childWidget) {
               return Transform.translate(
-                offset: Offset(0, 200 * _navigationAnimationController.value),
+                offset: Offset(
+                  0,
+                  200 *
+                      _navigationAnimationController
+                          .drive(CurveTween(curve: Curves.fastOutSlowIn))
+                          .value,
+                ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(40),
                   child: Container(
@@ -167,6 +182,7 @@ class _MyHomePageState extends State<MyHomePage>
                             onTap: () {
                               setState(() {
                                 showMapInfoSelector = true;
+                                _scaleAnimationController.forward();
                                 if (mapMakerModel.markerState ==
                                     MarkerState.icon) {
                                   mapMakerModel.showText();
@@ -182,19 +198,19 @@ class _MyHomePageState extends State<MyHomePage>
                           ),
                         ),
                       ),
-                      MapInfoSelector(
-                        onTap: () => setState(() {
-                          showMapInfoSelector = false;
-                          if (mapMakerModel.markerState == MarkerState.text) {
-                            return mapMakerModel.showIcon();
-                          }
-                        }),
-                      ).animate(target: showMapInfoSelector ? 1 : 0).scaleXY(
-                          end: 1,
-                          begin: 0,
-                          curve: Curves.fastOutSlowIn,
-                          alignment: Alignment.bottomLeft,
-                          duration: const Duration(milliseconds: 1000)),
+                      ScaleTransition(
+                        alignment: Alignment.bottomLeft,
+                        scale: _scaleAnimation,
+                        child: MapInfoSelector(
+                          onTap: () => setState(() {
+                            showMapInfoSelector = false;
+                            _scaleAnimationController.reverse();
+                            if (mapMakerModel.markerState == MarkerState.text) {
+                              return mapMakerModel.showIcon();
+                            }
+                          }),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(

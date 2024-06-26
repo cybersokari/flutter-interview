@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:sokari_flutter_interview/model/animation_model.dart';
 
 import 'custom_slider.dart';
 
@@ -9,12 +10,14 @@ class GalleryItem extends StatelessWidget {
     this.flex = 1,
     this.sliderText,
     this.sliderDelay = const Duration(milliseconds: 4000),
+    required this.animationModel,
   });
 
   final int flex;
   final String imagePath;
   final String? sliderText;
   final Duration sliderDelay;
+  final AnimationModel animationModel;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class GalleryItem extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Container(
-            width: double.infinity,
+            // width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
                 Radius.circular(20),
@@ -41,12 +44,12 @@ class GalleryItem extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: Stack(
-                alignment: Alignment.center,
+                alignment: Alignment.centerLeft,
                 children: [
                   CustomSlider(
-                    autoMoveDelay: sliderDelay,
                     height: height * .053,
-                    text: "Ademola St. 34",
+                    text: sliderText,
+                    animationModel: animationModel,
                   ),
                 ],
               ),

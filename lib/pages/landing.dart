@@ -1,11 +1,13 @@
 import 'dart:async';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:sokari_flutter_interview/extensions/number_duration_extensions.dart';
+import 'package:sokari_flutter_interview/model/animation_model.dart';
+import 'package:sokari_flutter_interview/molecule/expanding_box_widget.dart';
 import 'package:sokari_flutter_interview/organism/gallery.dart';
 
 import '../atom/counter_text.dart';
+import '../atom/slide_the_fade_widget.dart';
 
 class LandingView extends StatefulWidget {
   const LandingView({super.key});
@@ -14,7 +16,8 @@ class LandingView extends StatefulWidget {
   State<LandingView> createState() => _LandingViewState();
 }
 
-class _LandingViewState extends State<LandingView> {
+class _LandingViewState extends State<LandingView>
+    with SingleTickerProviderStateMixin {
   late Timer buyCountTimer;
   late Timer rentCountTimer;
   late int buyCount;
@@ -55,7 +58,10 @@ class _LandingViewState extends State<LandingView> {
         timer.cancel();
       }
     });
+    Future.delayed(400.milliseconds, () => instantAnimationsStarted = true);
   }
+
+  bool instantAnimationsStarted = false;
 
   @override
   void dispose() {
@@ -64,6 +70,7 @@ class _LandingViewState extends State<LandingView> {
     super.dispose();
   }
 
+  final animationModel = AnimationModel();
   double galleryPosition = -1000;
 
   void startGalleryAnimation(double height) => galleryPosition = -height * .23;
@@ -88,26 +95,30 @@ class _LandingViewState extends State<LandingView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Hi, Bukola",
-                      style:
-                          TextStyle(color: Colors.grey.shade600, fontSize: 18),
-                    ).animate().fadeIn(duration: 3.seconds),
-                    const AutoSizeText("let's select your",
-                            style: TextStyle(
-                                color: greetingTextColor,
-                                fontSize: greetingTextSize))
-                        .animate(delay: 500.milliseconds)
-                        .slideY(duration: 1500.milliseconds, begin: 1.5)
-                        .fadeIn(duration: 3000.milliseconds, begin: 0),
-                    const AutoSizeText("perfect place",
-                            style: TextStyle(
-                              color: greetingTextColor,
-                              fontSize: greetingTextSize,
-                            ))
-                        .animate(delay: 750.milliseconds)
-                        .slideY(duration: 1500.milliseconds, begin: 1.5)
-                        .fadeIn(duration: 3000.milliseconds),
+                    AnimatedOpacity(
+                      opacity: 1,
+                      duration: 3.seconds,
+                      child: Text(
+                        "Hi, Bukola",
+                        style: TextStyle(
+                            color: Colors.grey.shade600, fontSize: 18),
+                      ),
+                    ),
+                    const SlideAndFadeWidget(
+                      child: Text("let's select your",
+                          style: TextStyle(
+                            color: greetingTextColor,
+                            fontSize: greetingTextSize,
+                          )),
+                    ),
+                    SlideAndFadeWidget(
+                      delay: 1200.milliseconds,
+                      child: const Text("perfect place",
+                          style: TextStyle(
+                            color: greetingTextColor,
+                            fontSize: greetingTextSize,
+                          )),
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -118,102 +129,84 @@ class _LandingViewState extends State<LandingView> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ClipRRect(
+                      ExpandingBox(
+                        size: itemSize,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.orange,
+                        ),
                         borderRadius: BorderRadius.circular(100),
-                        child: Container(
-                          height: itemSize,
-                          width: itemSize,
-                          padding: const EdgeInsets.all(20),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.orange,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const AnimatedDefaultTextStyle(
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: countInfoFontSize),
-                                duration: Duration(milliseconds: 1000),
-                                child: Text(
-                                  "BUY",
-                                ),
-                              ),
-                              const Spacer(),
-                              AnimatedCounterText(
-                                  resizeDuration:
-                                      const Duration(milliseconds: 1000),
-                                  duration: const Duration(milliseconds: 1000),
-                                  value: buyCount,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: countFontSize)),
-                              const Text(
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: countInfoFontSize),
-                                "offers",
-                              ),
-                              const Spacer(),
-                            ],
-                          ),
-                        )
-                            .animate(
-                                delay: const Duration(milliseconds: 1000),
-                                onComplete: (_) =>
-                                    startGalleryAnimation(height))
-                            .scaleXY(
-                                begin: 0,
-                                end: 1,
-                                duration: const Duration(milliseconds: 1000)),
-                      ),
-                      ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                              child: Container(
-                                height: itemSize,
-                                width: itemSize,
-                                padding: const EdgeInsets.all(25),
-                                decoration: const BoxDecoration(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const AnimatedDefaultTextStyle(
+                              style: TextStyle(
                                   color: Colors.white,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      style: TextStyle(
-                                          color: rentTextColor,
-                                          fontSize: countInfoFontSize),
-                                      "RENT",
-                                    ),
-                                    const Spacer(),
-                                    AnimatedCounterText(
-                                        resizeDuration:
-                                            const Duration(milliseconds: 1000),
-                                        duration:
-                                            const Duration(milliseconds: 100),
-                                        value: rentCount,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: rentTextColor,
-                                            fontSize: countFontSize)),
-                                    const Text(
-                                      style: TextStyle(
-                                          color: rentTextColor,
-                                          fontSize: countInfoFontSize),
-                                      "offers",
-                                    ),
-                                    const Spacer(),
-                                  ],
-                                ),
-                              ))
-                          .animate(delay: const Duration(milliseconds: 1000))
-                          .scaleXY(
-                              begin: 0,
-                              end: 1,
-                              duration: const Duration(milliseconds: 1000)),
+                                  fontSize: countInfoFontSize),
+                              duration: Duration(milliseconds: 1000),
+                              child: Text(
+                                "BUY",
+                              ),
+                            ),
+                            const Spacer(),
+                            AnimatedCounterText(
+                                resizeDuration:
+                                    const Duration(milliseconds: 1000),
+                                duration: const Duration(milliseconds: 1000),
+                                value: buyCount,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: countFontSize)),
+                            const Text(
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: countInfoFontSize),
+                              "offers",
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
+                      ),
+                      ExpandingBox(
+                        size: itemSize,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              style: TextStyle(
+                                  color: rentTextColor,
+                                  fontSize: countInfoFontSize),
+                              "RENT",
+                            ),
+                            const Spacer(),
+                            AnimatedCounterText(
+                                resizeDuration:
+                                    const Duration(milliseconds: 1000),
+                                duration: const Duration(milliseconds: 100),
+                                value: rentCount,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: rentTextColor,
+                                    fontSize: countFontSize)),
+                            const Text(
+                              style: TextStyle(
+                                  color: rentTextColor,
+                                  fontSize: countInfoFontSize),
+                              "offers",
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
+                        onAnimationEnd: () {
+                          startGalleryAnimation(height);
+                        },
+                      ),
                     ],
                   );
                 }),
@@ -224,10 +217,13 @@ class _LandingViewState extends State<LandingView> {
             bottom: galleryPosition,
             left: 0,
             right: 0,
-            duration: const Duration(milliseconds: 2000),
+            duration: const Duration(milliseconds: 1200),
+            curve: Curves.fastOutSlowIn,
             child: Gallery(
+              animationModel: animationModel,
               height: height * .7,
             ),
+            onEnd: () => animationModel.moveSlider(),
           )
         ],
       ),

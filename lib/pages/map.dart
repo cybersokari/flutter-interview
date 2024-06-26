@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sokari_flutter_interview/atom/custom_map_marker.dart';
+import 'package:sokari_flutter_interview/extensions/number_duration_extensions.dart';
 import 'package:sokari_flutter_interview/model/map_marker_model.dart';
 
 class MapView extends StatefulWidget {

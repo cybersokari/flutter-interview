@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sokari_flutter_interview/generated/assets.dart';
 
@@ -18,15 +17,33 @@ class LandingAppbarView extends StatefulWidget {
   State<LandingAppbarView> createState() => _LandingAppbarViewState();
 }
 
-class _LandingAppbarViewState extends State<LandingAppbarView> {
+class _LandingAppbarViewState extends State<LandingAppbarView>
+    with SingleTickerProviderStateMixin {
   bool animateAppBarItemSize = false;
   bool showAppBarText = false;
+
+  late final AnimationController _scaleAnimationController =
+      AnimationController(
+    duration: widget.avatarRevealAnimationDuration,
+    vsync: this,
+  );
+  late final Animation<double> _scaleAnimation = CurvedAnimation(
+    parent: _scaleAnimationController,
+    curve: Curves.fastOutSlowIn,
+  );
+
+  @override
+  void dispose() {
+    _scaleAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     Future.delayed(widget.locationAnimationDelay, () {
       if (mounted) {
+        _scaleAnimationController.forward();
         setState(() {
           animateAppBarItemSize = true;
         });
@@ -42,6 +59,7 @@ class _LandingAppbarViewState extends State<LandingAppbarView> {
     return Row(
       children: [
         AnimatedContainer(
+          height: appBarHeight * .4,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
@@ -84,14 +102,15 @@ class _LandingAppbarViewState extends State<LandingAppbarView> {
           ),
         ),
         const Spacer(),
-        CircleAvatar(
-          radius: 20,
-          foregroundImage: Image.asset(
-            Assets.imagesImg5,
-          ).image,
-        ).animate().scale(
-            delay: widget.locationAnimationDelay,
-            duration: widget.avatarRevealAnimationDuration),
+        ScaleTransition(
+          scale: _scaleAnimation,
+          child: CircleAvatar(
+            radius: appBarHeight * .2,
+            foregroundImage: Image.asset(
+              Assets.imagesImg5,
+            ).image,
+          ),
+        ),
       ],
     );
   }

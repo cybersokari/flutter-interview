@@ -2,45 +2,67 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sokari_flutter_interview/extensions/number_duration_extensions.dart';
 import 'package:sokari_flutter_interview/generated/assets.dart';
+import 'package:sokari_flutter_interview/model/animation_model.dart';
 
 class CustomSlider extends StatefulWidget {
   final double height;
-  final animationDuration = const Duration(milliseconds: 10);
-  final Duration autoMoveDelay;
+  final Duration animationDuration;
   final String? text;
   final Function()? onSlided;
+  final AnimationModel animationModel;
 
   const CustomSlider({
     this.onSlided,
     this.text,
-    this.autoMoveDelay = const Duration(seconds: 2),
     super.key,
     this.height = 31,
+    this.animationDuration = const Duration(milliseconds: 2000),
+    required this.animationModel,
   });
 
   @override
   State<CustomSlider> createState() => _CustomSliderState();
 }
 
-class _CustomSliderState extends State<CustomSlider> {
+class _CustomSliderState extends State<CustomSlider>
+    with SingleTickerProviderStateMixin {
   Radius get _radius => Radius.circular(widget.height);
   bool slide = false;
   double _textOpacity = 0;
-  final animationDuration = 2000.milliseconds;
-  final animationCurve = Curves.fastOutSlowIn;
+  final animationCurve = Curves.linear;
+  bool sliderMovedAfterScaling = false;
+  late final AnimationController _scaleAnimationController =
+      AnimationController(
+    duration: 500.milliseconds,
+    vsync: this,
+  );
+  late final Animation<double> _scaleAnimation = CurvedAnimation(
+    parent: _scaleAnimationController,
+    curve: Curves.linear,
+  );
 
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(widget.autoMoveDelay, () {
-      setState(() {
-        slide = true;
-      });
+    _scaleAnimationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _moveSliderAfterScaling();
+      }
     });
+    widget.animationModel.addListener(() {
+      _scaleAnimationController.forward();
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.animationModel.dispose();
+    _scaleAnimationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -53,48 +75,65 @@ class _CustomSliderState extends State<CustomSlider> {
         builder: (_, BoxConstraints constraints) {
           final sliderRadius = widget.height / 2;
           final sliderMaxX = constraints.maxWidth - 2 * sliderRadius;
-          print("SliderMaxX: ${constraints.maxWidth}");
-          return Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.all(_radius),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                  child: AnimatedContainer(
-                    curve: animationCurve,
-                    width: slide ? constraints.maxWidth : constraints.minWidth,
-                    height: widget.height,
-                    color: const Color.fromRGBO(196, 183, 166, .7),
-                    duration: animationDuration,
-                  ),
-                ),
-              ),
-              AnimatedPositioned(
-                curve: animationCurve,
-                left: slide ? sliderMaxX : constraints.minWidth,
-                duration: animationDuration,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  height: widget.height,
-                  width: widget.height,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(_radius),
-                    color: Colors.white,
-                  ),
-                  child: SvgPicture.asset(Assets.iconsRightArrowLine),
-                ),
-                onEnd: () {
-                  setState(() {
-                    _textOpacity = 1;
-                  });
-                  widget.onSlided?.call();
-                },
-              ),
-              _buildText(constraints.maxWidth),
-            ],
+          return ScaleTransition(
+            alignment: Alignment.centerLeft,
+            scale: _scaleAnimation,
+            child: Stack(
+              children: [
+                _buildBackground(
+                    constraints.minWidth + sliderRadius, constraints.maxWidth),
+                _buildSlider(constraints.minWidth, sliderMaxX),
+                _buildText(constraints.maxWidth),
+              ],
+            ),
           );
         },
       ),
+    );
+  }
+
+  void _moveSliderAfterScaling() {
+    sliderMovedAfterScaling = true;
+    setState(() {});
+  }
+
+  Widget _buildBackground(double startX, double endX) {
+    return ClipRRect(
+      borderRadius: BorderRadius.all(_radius),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: AnimatedContainer(
+          curve: animationCurve,
+          width: sliderMovedAfterScaling ? endX : startX,
+          height: widget.height,
+          color: const Color.fromRGBO(196, 183, 166, .7),
+          duration: widget.animationDuration,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSlider(double startX, double endX) {
+    return AnimatedPositioned(
+      curve: animationCurve,
+      left: sliderMovedAfterScaling ? endX : startX,
+      duration: widget.animationDuration,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        height: widget.height,
+        width: widget.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(_radius),
+          color: Colors.white,
+        ),
+        child: SvgPicture.asset(Assets.iconsRightArrowLine),
+      ),
+      onEnd: () {
+        setState(() {
+          _textOpacity = 1;
+        });
+        widget.onSlided?.call();
+      },
     );
   }
 
